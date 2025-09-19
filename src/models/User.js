@@ -8,7 +8,12 @@ const UserSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     cpf: { type: String, required: true, unique: true },
     password: { type: String, required: true, select: false },
-    qrcode: { type: String, required: false },
+    qrcode: {
+        type: Object, default: {
+            url: null,
+            password: null,
+        }
+    },
     clinicalData: {
         type: Object, default: {
             bloodType: null,
