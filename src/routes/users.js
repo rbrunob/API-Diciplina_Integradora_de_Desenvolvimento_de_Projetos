@@ -5,10 +5,10 @@ const User = require("../models/User");
 // Registrar usuário
 router.post("/register", async (req, res) => {
     try {
-        const { name, email, password, cpf } = req.body;
+        const { name, email, password, cpf, age } = req.body;
 
-        if (!name || !email || !password || !cpf) {
-            return res.status(400).json({ error: "nome, email, senha e CPF são obrigatórios" });
+        if (!name || !email || !password || !cpf || !age) {
+            return res.status(400).json({ error: "nome, email, senha, CPF e Idade são obrigatórios" });
         }
 
         // Verifica se já existe
@@ -18,8 +18,8 @@ router.post("/register", async (req, res) => {
         const existsCpf = await User.findOne({ cpf });
         if (existsCpf) return res.status(409).json({ error: "CPF já cadastrado" });
 
-        const user = new User({ name, email, password, cpf });
-        await user.save(); // hook do mongoose fará o hash
+        const user = new User({ name, email, password, cpf, age });
+        await user.save();
 
         res.status(201).json(user);
     } catch (err) {
@@ -40,15 +40,20 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-// Atualizar nome e CPF do usuário
+// Atualizar
 router.put("/:id", async (req, res) => {
     try {
-        const { name, cpf } = req.body;
+        const { name, cpf, age, qrcode } = req.body;
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ error: "Usuário não encontrado" });
 
         if (name) user.name = name;
         if (cpf) user.cpf = cpf;
+        if (age) user.age = age;
+        if (qrcode) user.qrcode = {
+            url: qrcode.url,
+            password: qrcode.password
+        };
 
         await user.save();
         res.json(user);

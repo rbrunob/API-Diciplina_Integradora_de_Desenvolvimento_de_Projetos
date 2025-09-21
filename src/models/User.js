@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     cpf: { type: String, required: true, unique: true },
     password: { type: String, required: true, select: false },
+    age: { type: Number, required: true },
     qrcode: {
         type: Object, default: {
             url: null,
